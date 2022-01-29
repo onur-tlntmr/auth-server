@@ -1,7 +1,7 @@
 package com.example.springjwt.controller;
 
-import com.example.springjwt.model.Role;
-import com.example.springjwt.model.User;
+import com.example.springjwt.entity.Role;
+import com.example.springjwt.entity.User;
 import com.example.springjwt.service.UserService;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;

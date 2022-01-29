@@ -1,6 +1,8 @@
-package com.example.springjwt.model;
+package com.example.springjwt.entity;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
