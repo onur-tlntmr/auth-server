@@ -31,7 +31,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
-        User user = userRepo.findByUserName(username);
+        User user = userRepo.findByName(username);
 
         if (user == null)
             throw new UsernameNotFoundException("User is not found");
@@ -61,7 +61,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public void addRoleToUser(String username, String roleName) {
 
-        User user = userRepo.findByUserName(username);
+        User user = userRepo.findByName(username);
         Role role = roleRepo.findByName(roleName);
 
         user.getRoles().add(role);
@@ -70,7 +70,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public User getUser(String username) {
-        return userRepo.findByUserName(username);
+        return userRepo.findByName(username);
     }
 
     @Override

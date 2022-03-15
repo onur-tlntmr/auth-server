@@ -22,14 +22,14 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(nullable = false,updatable = false)
+    @Column(nullable = false, updatable = false)
     private long id;
 
-    @Column(length = 64)
+    @Column(name = "name", unique = true, nullable = false, length = 64)
     private String name;
 
-    @Column(unique = true,nullable = false,length = 64)
-    private String userName;
+    @Column(name = "full_name", unique = true, nullable = false, length = 64)
+    private String fullName;
 
     private String email;
 
@@ -40,7 +40,7 @@ public class User {
     @CreatedDate
     private Date createdDate;
 
-    @OneToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Collection<Role> roles = new ArrayList<>();
 
 }
