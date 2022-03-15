@@ -4,15 +4,13 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.example.springjwt.entity.Role;
+import com.example.springjwt.entity.User;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static java.util.Arrays.stream;
@@ -24,20 +22,23 @@ public class JwtTokenUtil {
 
     public static final String ISSUER = "example.com";
 
-    public static final int EXPIRES = 10 * 60 * 10000;
+    public static final int EXPIRES = 10 * 10 * 60 * 10000;
 
     private final Algorithm algorithm = Algorithm.HMAC256(KEY.getBytes());
 
     private final JWTVerifier verifier = JWT.require(algorithm).build();
 
-    public String createToken(User user) {
+    public String createJwtToken(User user) {
+
+        List<String> roles = user.getRoles().stream()
+                .map(Role::getName)
+                .collect(Collectors.toList());
 
         return JWT.create()
-                .withSubject(user.getUsername())
+                .withSubject(user.getName())
                 .withExpiresAt(new Date(System.currentTimeMillis() * EXPIRES))
                 .withIssuer(ISSUER)
-                .withClaim("roles", user.getAuthorities().stream()
-                        .map(GrantedAuthority::getAuthority).collect(Collectors.toList()))
+                .withClaim("roles", roles)
                 .sign(algorithm);
     }
 
@@ -57,6 +58,15 @@ public class JwtTokenUtil {
         return new UsernamePasswordAuthenticationToken(username,
                 null, authorities);
 
+    }
+
+
+    public String generateRefreshToken() {
+
+
+        return UUID.randomUUID()
+                .toString()
+                .replace("-", "");
 
     }
 

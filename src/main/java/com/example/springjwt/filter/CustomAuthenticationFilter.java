@@ -1,13 +1,12 @@
 package com.example.springjwt.filter;
 
-import com.example.springjwt.util.JwtTokenUtil;
+import com.example.springjwt.service.TokenService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import javax.servlet.FilterChain;
@@ -22,7 +21,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
     private final AuthenticationManager authenticationManager;
-    private final JwtTokenUtil jwtUtil;
+    private final TokenService tokenService;
 
 
     @Override
@@ -43,17 +42,7 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain,
                                             Authentication authResult) throws IOException {
 
-        User user = (User) authResult.getPrincipal();
-
-
-        String access_token = jwtUtil.createToken(user);
-
-
-        String refresh_token = jwtUtil.createToken(user);
-
-
-        Map<String, String> tokens = Map.of("access_token", access_token,
-                "refresh_token", refresh_token);
+        Map<String, String> tokens = tokenService.createTokens(authResult.getName());
 
         response.setContentType(APPLICATION_JSON_VALUE);
 
