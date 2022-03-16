@@ -12,6 +12,8 @@ import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.util.Map;
 
+import static com.example.springjwt.util.SecurityConstant.EXPIRES_MONTH_REFRESH_TOKEN;
+
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -39,7 +41,7 @@ public class TokenServiceImpl implements TokenService {
 
         refreshToken.setUser(user);
         refreshToken.setToken(token);
-        refreshToken.setExpiryDate(LocalDate.now().plusMonths(6));
+        refreshToken.setExpiryDate(LocalDate.now().plusMonths(EXPIRES_MONTH_REFRESH_TOKEN));
 
         tokenRepo.save(refreshToken);
 

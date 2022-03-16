@@ -13,16 +13,12 @@ import org.springframework.stereotype.Component;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static com.example.springjwt.util.SecurityConstant.*;
 import static java.util.Arrays.stream;
 
 @Component
 public class JwtTokenUtil {
 
-    public static final String KEY = "secret";
-
-    public static final String ISSUER = "example.com";
-
-    public static final int EXPIRES = 10 * 10 * 60 * 10000;
 
     private final Algorithm algorithm = Algorithm.HMAC256(KEY.getBytes());
 
@@ -36,7 +32,7 @@ public class JwtTokenUtil {
 
         return JWT.create()
                 .withSubject(user.getName())
-                .withExpiresAt(new Date(System.currentTimeMillis() * EXPIRES))
+                .withExpiresAt(new Date(System.currentTimeMillis() + EXPIRES_ACCESS_TOKEN))
                 .withIssuer(ISSUER)
                 .withClaim("roles", roles)
                 .sign(algorithm);
