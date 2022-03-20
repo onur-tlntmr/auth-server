@@ -2,6 +2,7 @@ package com.example.springjwt.service;
 
 import com.example.springjwt.entity.RefreshToken;
 import com.example.springjwt.entity.User;
+import com.example.springjwt.exception.ApiRequestException;
 import com.example.springjwt.repository.RefreshTokenRepo;
 import com.example.springjwt.repository.UserRepo;
 import com.example.springjwt.util.JwtTokenUtil;
@@ -86,7 +87,7 @@ public class TokenServiceImpl implements TokenService {
 
             return createTokens(token.getUser());
         } else
-            throw new RuntimeException("Invalid refresh token");
+            throw new ApiRequestException("Invalid refresh token");
 
     }
 

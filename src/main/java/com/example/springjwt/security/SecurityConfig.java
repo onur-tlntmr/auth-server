@@ -1,5 +1,7 @@
 package com.example.springjwt.security;
 
+import com.example.springjwt.exception.CustomAccessDeniedHandler;
+import com.example.springjwt.exception.CustomAuthenticationExceptionHandler;
 import com.example.springjwt.filter.CustomAuthenticationFilter;
 import com.example.springjwt.filter.CustomAuthorizationFilter;
 import com.example.springjwt.service.TokenService;
@@ -17,7 +19,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import static org.springframework.http.HttpMethod.GET;
-import static org.springframework.http.HttpMethod.POST;
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
 @Configuration
@@ -38,17 +39,24 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 
-        CustomAuthenticationFilter customAuthFilter = new CustomAuthenticationFilter(authenticationManagerBean(), tokenService);
+        CustomAuthenticationFilter customAuthFilter =
+                new CustomAuthenticationFilter(authenticationManagerBean(), tokenService);
+
         customAuthFilter.setFilterProcessesUrl("/login");
 
         http.csrf().disable();
         http.sessionManagement().sessionCreationPolicy(STATELESS);
         http.authorizeRequests().antMatchers("/login/**", "/auth/refresh").permitAll();
         http.authorizeRequests().antMatchers(GET, "/users/**").hasAuthority("ROLE_USER");
-        http.authorizeRequests().antMatchers(POST, "/api/users/save/**").hasAuthority("ROLE_ADMIN");
+        http.authorizeRequests().antMatchers("/roles/**").hasAuthority("ROLE_ADMIN");
         http.authorizeRequests().anyRequest().authenticated();
+        http.exceptionHandling().accessDeniedHandler(accessDeniedHandler());
+        http.exceptionHandling().authenticationEntryPoint(authenticationExceptionHandler());
         http.addFilter(customAuthFilter);
-        http.addFilterBefore(new CustomAuthorizationFilter(jwtTokenUtil), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(new CustomAuthorizationFilter(jwtTokenUtil),
+                UsernamePasswordAuthenticationFilter.class);
+
+
     }
 
     @Bean
@@ -57,4 +65,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return super.authenticationManagerBean();
     }
 
+    @Bean
+    public CustomAccessDeniedHandler accessDeniedHandler() {
+        return new CustomAccessDeniedHandler();
+
+    }
+
+    @Bean
+    public CustomAuthenticationExceptionHandler authenticationExceptionHandler() {
+        return new CustomAuthenticationExceptionHandler();
+    }
 }

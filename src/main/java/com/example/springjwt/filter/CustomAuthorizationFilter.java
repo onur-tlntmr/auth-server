@@ -13,7 +13,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
-import static org.springframework.http.HttpStatus.FORBIDDEN;
 
 @RequiredArgsConstructor
 public class CustomAuthorizationFilter extends OncePerRequestFilter {
@@ -31,19 +30,16 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
             String authHeader = request.getHeader(AUTHORIZATION);
 
             if (authHeader != null && authHeader.startsWith("Bearer ")) {
-                try {
-                    String token = authHeader.substring(7);
 
-                    UsernamePasswordAuthenticationToken authToken = jwtTokenUtil.getAuthToken(token);
+                String token = authHeader.substring(7);
 
-                    SecurityContextHolder.getContext().setAuthentication(authToken);
+                UsernamePasswordAuthenticationToken authToken = jwtTokenUtil.getAuthToken(token);
 
-                    filterChain.doFilter(request, response);
+                SecurityContextHolder.getContext().setAuthentication(authToken);
 
-                } catch (Exception e) {
-                    response.setHeader("error", e.getMessage());
-                    response.sendError(FORBIDDEN.value());
-                }
+                filterChain.doFilter(request, response);
+
+
             } else {
                 filterChain.doFilter(request, response);
             }
