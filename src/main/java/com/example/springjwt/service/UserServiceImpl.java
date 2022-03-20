@@ -1,9 +1,7 @@
 package com.example.springjwt.service;
 
 
-import com.example.springjwt.entity.Role;
 import com.example.springjwt.entity.User;
-import com.example.springjwt.repository.RoleRepo;
 import com.example.springjwt.repository.UserRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -24,14 +22,13 @@ import java.util.List;
 public class UserServiceImpl implements UserService, UserDetailsService {
 
     private final UserRepo userRepo;
-    private final RoleRepo roleRepo;
     private final PasswordEncoder passwordEncoder;
 
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
-        User user = userRepo.findByName(username);
+        User user = userRepo.findByUserName(username);
 
         if (user == null)
             throw new UsernameNotFoundException("User is not found");
@@ -44,7 +41,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         });
 
 
-        return new org.springframework.security.core.userdetails.User(user.getName(), user.getPassword(), authorities);
+        return new org.springframework.security.core.userdetails.User(user.getUserName(), user.getPassword(), authorities);
     }
 
     @Override
@@ -53,24 +50,11 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         return userRepo.save(user);
     }
 
-    @Override
-    public Role saveRole(Role role) {
-        return roleRepo.save(role);
-    }
 
-    @Override
-    public void addRoleToUser(String username, String roleName) {
-
-        User user = userRepo.findByName(username);
-        Role role = roleRepo.findByName(roleName);
-
-        user.getRoles().add(role);
-
-    }
 
     @Override
     public User getUser(String username) {
-        return userRepo.findByName(username);
+        return userRepo.findByUserName(username);
     }
 
     @Override

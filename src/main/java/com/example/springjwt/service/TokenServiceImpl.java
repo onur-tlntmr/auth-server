@@ -52,7 +52,7 @@ public class TokenServiceImpl implements TokenService {
     @Override
     public Map<String, String> createTokens(String userName) {
 
-        User user = userRepo.findByName(userName);
+        User user = userRepo.findByUserName(userName);
 
         String access_token = jwtUtil.createJwtToken(user);
 

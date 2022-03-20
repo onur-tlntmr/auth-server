@@ -2,7 +2,7 @@ package com.example.springjwt.controller;
 
 import com.example.springjwt.entity.Role;
 import com.example.springjwt.service.RoleService;
-import com.example.springjwt.service.UserService;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,6 +11,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.net.URI;
 import java.util.List;
 
@@ -18,7 +21,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class RoleController {
 
-    private final UserService userService;
     private final RoleService roleService;
 
     @GetMapping("/roles")
@@ -26,18 +28,30 @@ public class RoleController {
         return ResponseEntity.ok(roleService.getRoles());
     }
 
-    @PostMapping("/roles/save")
-    public ResponseEntity<Role> saveRole(@RequestBody Role role) {
-        URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/role/save").toUriString());
-        return ResponseEntity.created(uri).body(userService.saveRole(role));
+    @PostMapping("/roles")
+    public ResponseEntity<Role> saveRole(@Valid @RequestBody Role role) {
+        URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath()
+                .path("/api/role/save").toUriString());
+
+        return ResponseEntity.created(uri).body(roleService.saveRole(role));
     }
 
-    @PostMapping("/addtouser")
+    @PostMapping("roles/addtouser")
     public ResponseEntity<?> addRoleToUser(@RequestBody RoleToUserForm form) {
 
-        userService.addRoleToUser(form.getUsername(), form.getRoleName());
+        roleService.addRoleToUser(form.getUserName(), form.getRoleName());
 
         return ResponseEntity.ok().build();
     }
 
+}
+
+@Data
+class RoleToUserForm {
+    @NotNull
+    @Size(min = 6, max = 64)
+    private String userName;
+    @NotNull
+    @Size(max = 24)
+    private String roleName;
 }

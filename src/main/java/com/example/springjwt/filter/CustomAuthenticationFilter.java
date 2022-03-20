@@ -28,8 +28,14 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
             throws AuthenticationException {
 
-        String username = request.getParameter("username");
-        String password = request.getParameter("password");
+        Map<String, String> requestMap = null;
+        try {
+            requestMap = new ObjectMapper().readValue(request.getInputStream(), Map.class);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        String username = requestMap.get("userName");
+        String password = requestMap.get("password");
 
 
         UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(username, password);

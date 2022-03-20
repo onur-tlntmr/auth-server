@@ -31,7 +31,7 @@ public class JwtTokenUtil {
                 .collect(Collectors.toList());
 
         return JWT.create()
-                .withSubject(user.getName())
+                .withSubject(user.getUserName())
                 .withExpiresAt(new Date(System.currentTimeMillis() + EXPIRES_ACCESS_TOKEN))
                 .withIssuer(ISSUER)
                 .withClaim("roles", roles)

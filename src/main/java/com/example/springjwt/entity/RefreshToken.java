@@ -5,6 +5,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.time.LocalDate;
 
 @Entity
@@ -22,7 +24,8 @@ public class RefreshToken {
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private User user;
 
-
+    @NotNull
+    @Size(min = 32, max = 32, message = "Token must length is 32 character")
     @Column(name = "token", nullable = false, unique = true, length = 32)
     private String token;
 
