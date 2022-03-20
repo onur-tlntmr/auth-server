@@ -5,6 +5,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 
 @NoArgsConstructor
@@ -17,10 +19,12 @@ public class Role {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(nullable = false,updatable = false)
+    @Column(nullable = false, updatable = false)
     private short id;
 
-    @Column(unique = true,nullable = false,length = 24)
+    @NotNull
+    @Size(max = 24)
+    @Column(unique = true, nullable = false, length = 24)
     private String name;
 
 }

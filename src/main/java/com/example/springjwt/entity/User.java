@@ -4,12 +4,16 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 
 
 @NoArgsConstructor
@@ -17,7 +21,7 @@ import java.util.Date;
 @Data
 
 @Entity
-@Table(name="users")
+@Table(name = "users")
 public class User {
 
     @Id
@@ -25,22 +29,36 @@ public class User {
     @Column(nullable = false, updatable = false)
     private long id;
 
-    @Column(name = "name", unique = true, nullable = false, length = 64)
-    private String name;
+    @NotNull
+    @Size(min = 4, max = 64)
+    @Column(name = "user_name", unique = true, nullable = false, length = 64)
+    private String userName;
 
+    @NotNull
+    @Size(min = 4, max = 64)
     @Column(name = "full_name", unique = true, nullable = false, length = 64)
     private String fullName;
 
+    @Size(max = 255)
+    @Email
     private String email;
+
 
     @Column(length = 60)
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
     @CreatedDate
-    private Date createdDate;
+    @CreationTimestamp
+    private LocalDate createdDate;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Collection<Role> roles = new ArrayList<>();
 
+    public User(String userName, String fullName, String email, String password) {
+        this.userName = userName;
+        this.fullName = fullName;
+        this.email = email;
+        this.password = password;
+    }
 }
