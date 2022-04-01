@@ -5,7 +5,6 @@ import com.example.springjwt.exception.CustomAuthenticationExceptionHandler;
 import com.example.springjwt.filter.CustomAuthenticationFilter;
 import com.example.springjwt.filter.CustomAuthorizationFilter;
 import com.example.springjwt.service.TokenService;
-import com.example.springjwt.util.JwtTokenUtil;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -28,7 +27,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final UserDetailsService userDetailsService;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
-    private final JwtTokenUtil jwtTokenUtil;
     private final TokenService tokenService;
 
     @Override
@@ -40,9 +38,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
 
         CustomAuthenticationFilter customAuthFilter =
-                new CustomAuthenticationFilter(authenticationManagerBean(), tokenService);
+                new CustomAuthenticationFilter(tokenService);
 
-        customAuthFilter.setFilterProcessesUrl("/login");
+        customAuthFilter.setAuthenticationManager(authenticationManagerBean());
 
         http.csrf().disable();
         http.sessionManagement().sessionCreationPolicy(STATELESS);
@@ -52,8 +50,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests().anyRequest().authenticated();
         http.exceptionHandling().accessDeniedHandler(accessDeniedHandler());
         http.exceptionHandling().authenticationEntryPoint(authenticationExceptionHandler());
-        http.addFilter(customAuthFilter);
-        http.addFilterBefore(new CustomAuthorizationFilter(jwtTokenUtil),
+        http.addFilterAt(customAuthFilter, UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(new CustomAuthorizationFilter(tokenService),
                 UsernamePasswordAuthenticationFilter.class);
 
 
