@@ -7,6 +7,7 @@ import com.example.springjwt.repository.RefreshTokenRepo;
 import com.example.springjwt.repository.UserRepo;
 import com.example.springjwt.util.JwtTokenUtil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -74,6 +75,11 @@ public class TokenServiceImpl implements TokenService {
         return Map.of("access_token", access_token,
                 "refresh_token", refreshToken.getToken());
 
+    }
+
+    @Override
+    public UsernamePasswordAuthenticationToken getAuthToken(String token) {
+        return jwtUtil.getAuthToken(token);
     }
 
     @Override

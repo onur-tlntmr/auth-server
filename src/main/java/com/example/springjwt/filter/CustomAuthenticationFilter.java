@@ -2,12 +2,12 @@ package com.example.springjwt.filter;
 
 import com.example.springjwt.service.TokenService;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.RequiredArgsConstructor;
-import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import javax.servlet.FilterChain;
 import javax.servlet.http.HttpServletRequest;
@@ -17,30 +17,36 @@ import java.util.Map;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
-@RequiredArgsConstructor
-public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
-    private final AuthenticationManager authenticationManager;
+public class CustomAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
+
     private final TokenService tokenService;
 
+    public CustomAuthenticationFilter(TokenService tokenService) {
+        super(new AntPathRequestMatcher("/login", "POST"));
+        this.tokenService = tokenService;
+    }
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
             throws AuthenticationException {
 
-        Map<String, String> requestMap = null;
+        String username, password;
+
         try {
-            requestMap = new ObjectMapper().readValue(request.getInputStream(), Map.class);
+            Map<String, String> requestMap = new ObjectMapper().readValue(request.getInputStream(), Map.class);
+            username = requestMap.get("username");
+            password = requestMap.get("password");
+
+
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new AuthenticationServiceException(e.getMessage(), e);
         }
-        String username = requestMap.get("userName");
-        String password = requestMap.get("password");
 
+        UsernamePasswordAuthenticationToken authRequest = new UsernamePasswordAuthenticationToken(
+                username, password);
 
-        UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(username, password);
-
-        return authenticationManager.authenticate(authToken);
+        return this.getAuthenticationManager().authenticate(authRequest);
     }
 
 

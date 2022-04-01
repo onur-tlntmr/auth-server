@@ -1,6 +1,6 @@
 package com.example.springjwt.filter;
 
-import com.example.springjwt.util.JwtTokenUtil;
+import com.example.springjwt.service.TokenService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -17,7 +17,7 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 @RequiredArgsConstructor
 public class CustomAuthorizationFilter extends OncePerRequestFilter {
 
-    private final JwtTokenUtil jwtTokenUtil;
+    private final TokenService tokenService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
@@ -33,7 +33,7 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
 
                 String token = authHeader.substring(7);
 
-                UsernamePasswordAuthenticationToken authToken = jwtTokenUtil.getAuthToken(token);
+                UsernamePasswordAuthenticationToken authToken = tokenService.getAuthToken(token);
 
                 SecurityContextHolder.getContext().setAuthentication(authToken);
 
