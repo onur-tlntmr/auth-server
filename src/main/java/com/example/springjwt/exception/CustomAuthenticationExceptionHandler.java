@@ -25,6 +25,7 @@ public class CustomAuthenticationExceptionHandler implements AuthenticationEntry
 
         PrintWriter out = response.getWriter();
         response.setContentType("application/json");
+        response.setStatus(status.value());
         response.setCharacterEncoding("UTF-8");
         out.print(jsonException);
 

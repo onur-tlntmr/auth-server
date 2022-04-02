@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 import java.net.URI;
 import java.util.List;
@@ -36,8 +36,8 @@ public class RoleController {
         return ResponseEntity.created(uri).body(roleService.saveRole(role));
     }
 
-    @PostMapping("roles/addtouser")
-    public ResponseEntity<?> addRoleToUser(@RequestBody RoleToUserForm form) {
+    @PostMapping("/roles/addtouser")
+    public ResponseEntity<?> addRoleToUser(@Valid @RequestBody RoleToUserForm form) {
 
         roleService.addRoleToUser(form.getUserName(), form.getRoleName());
 
@@ -48,10 +48,10 @@ public class RoleController {
 
 @Data
 class RoleToUserForm {
-    @NotNull
-    @Size(min = 6, max = 64)
+    @NotEmpty
+    @Size(max = 64)
     private String userName;
-    @NotNull
+    @NotEmpty
     @Size(max = 24)
     private String roleName;
 }

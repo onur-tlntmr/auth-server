@@ -26,6 +26,7 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
         JSONObject jsonException = new JSONObject(exception);
 
         PrintWriter out = response.getWriter();
+        response.setStatus(status.value());
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         out.print(jsonException);
