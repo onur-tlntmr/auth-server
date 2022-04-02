@@ -9,7 +9,7 @@ import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -29,21 +29,22 @@ public class User {
     @Column(nullable = false, updatable = false)
     private long id;
 
-    @NotNull
-    @Size(min = 4, max = 64)
+    @NotEmpty
+    @Size(max = 64)
     @Column(name = "user_name", unique = true, nullable = false, length = 64)
     private String userName;
 
-    @NotNull
-    @Size(min = 4, max = 64)
+    @NotEmpty
+    @Size(max = 64)
     @Column(name = "full_name", unique = true, nullable = false, length = 64)
     private String fullName;
 
+    @NotEmpty
     @Size(max = 255)
     @Email
     private String email;
 
-
+    @NotEmpty
     @Column(length = 60)
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;

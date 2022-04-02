@@ -18,6 +18,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import static org.springframework.http.HttpMethod.GET;
+import static org.springframework.http.HttpMethod.POST;
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
 @Configuration
@@ -45,7 +46,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.csrf().disable();
         http.sessionManagement().sessionCreationPolicy(STATELESS);
         http.authorizeRequests().antMatchers("/login/**", "/auth/refresh").permitAll();
-        http.authorizeRequests().antMatchers(GET, "/users/**").hasAuthority("ROLE_USER");
+        http.authorizeRequests().antMatchers(POST, "/users").permitAll();
+        http.authorizeRequests().antMatchers(GET, "/users/**").hasAuthority("ROLE_ADMIN");
         http.authorizeRequests().antMatchers("/roles/**").hasAuthority("ROLE_ADMIN");
         http.authorizeRequests().anyRequest().authenticated();
         http.exceptionHandling().accessDeniedHandler(accessDeniedHandler());
