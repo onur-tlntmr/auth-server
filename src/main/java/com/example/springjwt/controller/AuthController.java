@@ -2,6 +2,7 @@ package com.example.springjwt.controller;
 
 
 import com.example.springjwt.entity.RefreshToken;
+import com.example.springjwt.entity.User;
 import com.example.springjwt.service.TokenService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +19,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class AuthController {
 
+    private final UserController userController;
     private final TokenService tokenService;
 
     @PostMapping("/refresh")
@@ -28,6 +30,20 @@ public class AuthController {
         return ResponseEntity.ok(newTokens);
 
     }
+
+    @PostMapping("/signout")
+    public ResponseEntity<?> logout(@Valid @RequestBody RefreshToken refreshToken) {
+
+        tokenService.deleteRefreshToken(refreshToken.getToken());
+
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/signup")
+    public ResponseEntity<User> signup(@Valid @RequestBody User user) {
+        return userController.saveUser(user);
+    }
+
 
 }
 

@@ -43,9 +43,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         customAuthFilter.setAuthenticationManager(authenticationManagerBean());
 
+        http.formLogin().disable();
         http.csrf().disable();
         http.sessionManagement().sessionCreationPolicy(STATELESS);
-        http.authorizeRequests().antMatchers("/login/**", "/auth/refresh").permitAll();
+        http.authorizeRequests().antMatchers(POST, "/auth/**").permitAll();
 
         http.authorizeRequests().antMatchers(POST, "/users").permitAll();
         http.authorizeRequests().antMatchers(GET, "/users").hasAuthority("ROLE_ADMIN");

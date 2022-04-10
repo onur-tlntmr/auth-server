@@ -17,6 +17,7 @@ public interface TokenService {
 
     Map<String, String> refreshTokens(String refreshToken);
 
+    void deleteRefreshToken(String token);
 
     void cleanExpiredTokens();
 

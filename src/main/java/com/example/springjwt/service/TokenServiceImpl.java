@@ -97,6 +97,19 @@ public class TokenServiceImpl implements TokenService {
 
     }
 
+    @Override
+    public void deleteRefreshToken(String token) {
+
+        RefreshToken refreshToken = tokenRepo.findByToken(token);
+
+        if (refreshToken != null)
+            tokenRepo.delete(refreshToken);
+
+        else
+            throw new ApiRequestException("Invalid refresh token");
+
+    }
+
 
     @Override
     public void cleanExpiredTokens() {
