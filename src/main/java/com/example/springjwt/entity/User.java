@@ -15,6 +15,8 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import static javax.persistence.CascadeType.*;
+
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -53,7 +55,7 @@ public class User {
     @CreationTimestamp
     private LocalDate createdDate;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = {MERGE, PERSIST, REFRESH, DETACH})
     private Collection<Role> roles = new ArrayList<>();
 
     public User(String userName, String fullName, String email, String password) {

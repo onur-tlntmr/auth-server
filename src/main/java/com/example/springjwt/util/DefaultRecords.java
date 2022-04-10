@@ -37,7 +37,10 @@ public class DefaultRecords implements CommandLineRunner {
                         "admin@1234"),
 
                 new User("user", "User", "user@testuser.com",
-                        "user@1234")
+                        "user@1234"),
+
+                new User("testuser", "Test User", "testuser@testuser.com",
+                        "testuser@1234")
         );
 
         // Users save to db
@@ -45,10 +48,8 @@ public class DefaultRecords implements CommandLineRunner {
 
         // Roles Save to users
         roles.forEach(role -> roleService.addRoleToUser("root", role.getName()));
+        roleService.addRoleToUser("admin", roles.get(1).getName());
 
-        roles.subList(1, 3).
-                forEach(role -> roleService.addRoleToUser("admin", role.getName()));
 
-        roleService.addRoleToUser("user", roles.get(2).getName());
     }
 }
